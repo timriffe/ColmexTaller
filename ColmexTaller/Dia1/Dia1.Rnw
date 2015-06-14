@@ -1,0 +1,219 @@
+%% LyX 2.1.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[11pt, spanish]{article}
+\usepackage[spanish]{babel}
+\selectlanguage{spanish}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\usepackage{natbib}
+\bibpunct{(}{)}{,}{a}{}{;} 
+\usepackage{amsmath}
+\newcommand{\dd}{\; \mathrm{d}}
+\newcommand{\tc}{\quad\quad\text{,}}
+\newcommand{\tp}{\quad\quad\text{.}}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+
+\begin{document}
+<<setup, include=FALSE, cache=FALSE>>=
+#library(knitr)
+# set global chunk options
+opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold')
+options(formatR.arrow=TRUE,width=90)
+@
+
+
+\title{Lunes:\\ la tabla de vida como poblaci\'on estacionaria}
+
+
+\author{Tim Riffe}
+
+\maketitle
+\section{Columnas de la tabla de vida est\'andar.}
+
+La tabla de vida tiene ya bastantes columnas. Algunas son instrumentales en el
+sentido de que nos sirven principalmente para calcular alguna otra columna
+[$a_x$, $T_x$], mientras otras son de inter\'es directo
+[$l_x$,$q_x$,$m_x$,$e_x$]. El $d_x$, la distribuci\'on de defunciones por
+edad, normalmente se considera instrumental, pero hoy veremos que tiene
+interpretaciones varias y que por lo tanto tiene un inter\'es propio. Doy unas
+interpretaciones b\'asicas de las columnas distintas en el siguiente listado:
+
+\begin{description}
+  \item{$M_x$} La tasa especifica de mortalidad en el intervalo de edad
+  $[x,x+1)$. Est\'a definida como el n\'umero de defunciones dividido por la
+  exposici\'on en terminos de a\~nos personas vividos dentro del intervalo.
+  \item{$m_x$} Suele ser igual que $M_x$, pero se supone que sea la tasa
+  valida para calcular la tabla de vida. Puede ser una version suavizada o
+  ajustada de $M_x$. Normalmente imaginamos que sea la version discreta de
+  $\mu(x)$, la \textit{fuerza pura de la mortalidad}. Para mi, $\mu(x)$ es
+  igual al $h(x)$, el hazard de la mortalidad, pero no se si alguien se pondria
+  filos\'ofico sobre el tema.
+  \item{$a_x$} la duraci\'on media de vida dentro del intervalo $[x,x+1)$ de
+  los que mueren dentro del mismo intervalo. 
+  \item{$q_x$} la probabilidad de morir en el intervalo $[x,x+a)$,
+  supuesta la supervivencia hasta la edad $x$. Algunos demografos lo llaman la
+  tasa especifica de la mortalidad, pero realmente $m_x$ es la tassa especifica
+  y $q_x$ es la probabilidad especifica. Suele tener un valor cerca a lo de
+  $m_x$, menos cuando $m_x$ es grande. $q_x$ tiene que estar entre 0 y 1, pero
+  $m_x$ entre 0 y $\infty$ \footnote{Bueno, $m_x = \infty$ solo podria
+  pasar si todos mueren a una edad exacta, justo al llegar a esa edad, como la
+  edad 18 en \textit{Children of the Corn} (1984) (La cosecha del terror: los ni\~nos
+  del ma\'iz) \url{http://www.imdb.com/title/tt0087050/}}.
+  \item{$l_x$} La dicha curva de supervivencia. $\frac{l_x}{l_0}$ es la
+  probabilidad de sobrevivir a la edad $x$ desde 0. La area por debajo de esa
+  curva es la esperanza de vida.
+  \item{$d_x$} the diferencia entre $l_x$ y $l_{x+1}$, o la probabilidad de
+  morir en el intervalo de edad $[x,x+1)$ desde 0, o la distribuci\'on de
+  defunciones de la tabla de vida (es decir, estandarizada). Y m\'as \ldots
+  \item{$L_x$} la expoci\'on especifica de la tabla de vida, es decir todos los
+  a\~nos hipot\'eticos vividos dentro del intervalo de edad $[x,x+1)$. Hay
+  muchas aproximaciones. Lo importante es saber que $L_x$ es una \'area,
+  mientras $l_x$ es un valor exacto a un punto de tiempo.
+  \item{$T_x$} todos los a\~nos de vida hipot\'etica vividos hipoteticamente a
+  partir de la edad exacta $x$, es decir la \'area por debajo de $l_x$ entre $x$
+  y $\infty$, o $\omega$ si queremos ser finitos. Aunque tenga interpretaci'on,
+  se suele usar como el paso penultimo de la tabla de vida para calcular la
+  esperanza de vida restante\ldots
+  \item{$e_x$} la esperanza de vida restante suponiendo la supervivencia hasta
+  la edad $x$. Una esperanza en ese sentido es una media y nada m\'as. Es decir,
+  es la media sencilla de todas las duraciones de vida hipot\'eticas (dentro
+  de la tabla de vida) que pasen por la edad $x$. Esto es lo que todo el mundo
+  quiere saber, y su interpretaci\'on es f\'acil, pero tambi\'en f\'acil de
+  sobreinterpretar y malutilizar.
+\end{description}
+
+Dependiendo de la disponibilidad de informaci\'on sobre el cohorte de
+nacimiento para las defunciones, se puede tambi\'en pasar de calcular $m_x$ y $a_x$ y empezar
+directamente con $q(x)$, definido de otra forma que lo de antes. Esto ser\'ia el
+dicho \textit{m\'etodo franc\'es}.
+
+\section{Unas columnas nuevas}
+Normalmente estamos satisfechos con citar la esperanza de vida y acabar as\'i la
+tarea. Hay otras cosas que se puede preguntar, como la varianza alrededor de la
+esperanza de vida. Que quiere decir la varianza alrededor de la esperanza de
+vida? \footnote{Estoy seguro de que cada unos de estas definiciones este escondido
+dentro de \citet{chiang1984life}, pero aquel libro est\'a mal organizado y
+utiliza una notaci\'on casi impenetrable.} 
+
+\begin{enumerate}
+  \item{Que es la precici\'on de nuestra estimaci\'on de $e_x$, dado la
+  aleatoriedad aparente en los datos debido al tama\~no de la poblaci\'on, el
+  nivel y forma aparente de la mortalidad, y nuestro instrumento de
+  observaci\'on? Existen formulas para contestar esta pregunta, pero dependen de propiedades asimptoticas de los proceses generadores. Luego podemos hacer esimulaciones de esto si algui\'en pregunta}
+  \item{La precici\'on de nuestra estimaci\'on de $e_x$ dado nuestra tabla de
+  vida (forma y nivel de la mortalidad), la poblaci\'on estacionaria implicada por $l_x$, y un valor dado de
+  $l_0$ \footnote{$l_0$ es el radix, o la poblaci\'on de inicio de la tabla de
+  vida.}. Es diferente de lo anterior ya que su poblaci\'on de refer\'encia es
+  hipot\'etica.}
+  \item{La fiabilidad de $e_x$ como una estiamci\'on de los a\~nos realmente
+  restantes para la gente que ha cumplido $x$ a\~nos. Como $e_x$ es la media de
+  una distribuci\'on de algo\ldots duraciones de vida restantes, pu\'es podemos
+  saber si es muy informativo o no.\footnote{Estoy trabajando en desarollar
+  medidas relacionadas con esta tercera, y puedes ver un esbozo de un paper (aun en obras) aqui: \url{http://paa2015.princeton.edu/abstracts/151529}.}}
+\end{enumerate}
+La tercera version de la varianza
+alrededor de la esperanza de vida restante es la que nos interesa hoy. Es lo que tu quieres saber como individuo. Yo tengo 34 a\~nos y la tabla de vida de EEUU me pone 45 a\~nos restantes\ldots A parte de
+mis sesgos personales sobre mi mortalidad probable, y los sesgos implicados por
+la perspectiva transversal,\footnote{Es decir, si me haces una proyecci\'on
+buena y sale algo m\'as razonable, como $e_{34} = 52$, todavia tendr\'e la misma
+preocupaci\'on.} quiero saber algo de la variabilidad de las duraciones de vida
+resumida con el n\'umero $e_x$. Algunos moriran antes y otros despu\'es de lo
+que pone $e_x$. 
+
+Ahora unas formulas continuas que usar\'e durante la clase:
+
+Definici\'on normal de $e(x)$
+\begin{equation}
+e(x) = \frac{1}{l(x)}\int_0^\infty l(x+y) \dd y \tc
+\end{equation}
+Donde $x$ es la edad (a\~nos vividos) y $y$ son los a\~nos restantes.
+
+Tambi\'en podemos pensar de $e(x)$ como la media ponderada de $y$ para la gente
+que ha sobrevivido hasta $x$, donde el ponderador es la siguiente:
+\begin{equation}
+\label{eq:fya}
+f(y|x) = \frac{1}{l(x)} \mu(x+y) l(x+y) \tp
+\end{equation}
+$f(y|x)$ es como $d_x$ de la tabla de vida, pero cada edad tiene su propia
+curva, como si todos fueron la edad 0 en la tabla de vida. Entonces ponderamos
+$y$ as\'i:
+\begin{equation}
+\label{ex}
+e(x) = \int _{y=0}^\infty y f(y|x) \dd y \tp
+\end{equation}
+Esta forma es un poco m\'as ex\'otica, pero $f(y|x)$ resulta ser \'util para
+otras cosas tambi\'en.
+Definimos los momentos centrales alrededor de la media condicional de $f(y|x)$:
+$\eta_n(y|x)$, donde $n$ es el n\'umero del momento.
+\begin{equation}
+\label{eta}
+\eta _n(y|x) =  \int_{y=0}^\infty (y-e(x))^n f(y|x) \dd y \tp
+\end{equation}
+Entonces se ve que $\eta _1(y|x)$ es igual a 0, y la varianza de la
+distribuci\'on de duraciones de vida restantes es $\eta _2(y|x)$ (tambi\'en
+llamado $\sigma^2(y|x)$). Se puede resumir la asimetr\'ia de $f(y|x)$
+($Skew(y|x)$) con:
+\begin{equation}
+\label{eq:skew}
+Skew(y|x) = \frac{\eta _3(y|x)}{\sigma(y|x)^3} \tp
+\end{equation}
+Si $Skew(y|x) < 0$ la distribuci\'on tira a edades jovenes, mientras $Skew(y|x)
+> 0$ pone m\'as peso a las edades mayores. El curt\'osis (apuntamiento) de
+$f(y|x)$, $Kurt(y|x)$ se define como:
+\begin{equation}
+\label{eq:kurt}
+Kurt(y|x) = \frac{\eta_4(y|x)}{\sigma(y|x)^4}-3 \tp
+\end{equation}
+$Kurt(y|x) > 0$ Nos dice si la distribuci\'on est\'a relativamente puntuosa,
+mientras $< 0$ quiere decir decir que esta m\'as gorda (plana) que lo normal.
+Normal en este sentido quiere decir una distribuci\'on normal, no mortalidad
+normal. La mortalidad normal seria dif\'icil de definir\ldots 
+
+Finalmente, podemos definir la coeficiente de variaci\'on de los a\~nos
+restantes, $CV(y|x)$:
+\begin{equation}
+\label{eq:cv}
+CV(y|x) = \frac{\sigma(y|x)}{e(x)} \tp
+\end{equation}
+
+$\sigma^2(y|x)$, y las equaciones \eqref{eq:skew}, \eqref{eq:kurt}, y
+\eqref{eq:cv} son pensables como columnas nuevas de la tabla de vida, calculadas
+por su interpretaci\'on directa desde la perspectiva de un individuo cuyo
+trayectoria de vida este condicionada por la misma tabla de vida. La curva de
+edad de estas cuatro columnas es informativa para cualquier plan de vida.
+
+\section{Relaciones entre la tabla de vida y poblaciones estacionarias.}
+Ahora quiero explicar una equivalencia entre la curva de supervivencia, $l_x$, y
+la estructura estable de edades de la poblaci\'on estacionaria. Unas
+refer\'encias ser\'ian \citet{brouard1989mouvements} (franc\'es), \citet{Vaupel2009} y
+\citet{Riffe2015}. Brevemente, $d_x$
+es la distribuci\'on de defunciones dentro de la tabla de vida, pero tambi\'en
+es la distribuci\'on de duraciones de vida de cada cohorte nacido dentro de la
+poblaci\'on ficticia que pase por la tabla de vida. Si $l_0$ es el tama\~no de
+cada cohorte nacido dentro de la poblaci\`on, entonces la disminuci\'on de cada
+cohorte sigue la pauta de $l_x$, y son equivalentes. 
+
+En esta
+poblaci\'on tambi\'en se puede decir que la estructura estacionaria por a\~nos
+restantes es identica a lo de los a\~nos vividos. N. Brouard ha sido el primer
+en describirlo, y luego J. Carey, seguido por J. Vaupel, quien lo llama
+err\'oneamente \textit{Carey's equality}. Se puede buscar las demostraciones en
+las fuentes citadas, pero intentar\'e explicarlo bi\'en en la clase. Lo
+importante es a\~nadir interpretaciones a estas columnas b\'asicas que ya
+tenemos. 
+
+Entonces a\~nadimos una interpretaci\'on a la columna $d_x$ que ahora
+puede resultar b\'asica: tambi\'en es la distribuci\'on de a\~nos restantes de
+cada cohorte al nacer. Con aquel perspectivo, se puede seguir cada cohorte en el
+tiempo y saber como cambia su distribuci\'on de a\~nos restantes con el paso de
+tiempo, y calcula como se mezclan diferentes cohortes de nacimiento en cada
+\textit{cohorte de defunciones}. Ser\'a que la distribuci\'on de a\~nos vividos
+dentro de cada cohorte de defunciones es igual al $d_x$ tambi\'en, y eso solo es
+otra manera de decir lo que ha sido la definici\'on original de $d_x$.
+
+\bibliographystyle{plainnat}
+%\bibliographystyle{demography}
+  \bibliography{references}  
+\end{document}
