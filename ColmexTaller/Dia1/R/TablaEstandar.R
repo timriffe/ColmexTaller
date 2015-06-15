@@ -5,27 +5,88 @@
 # instalamos unos packages 
 ####################################################################
 
+###############################################################
+# todo lo que escribes ewn este lado es invisible al R
+###############################################################
+
+# regla 1) escribir apuntes directamente en el codigo
+
+# R es una calculadora:"
+a <- 1+1
+a+ 1
+
+# mas basica = vector
+a <- 1:10
+a <- 0:110
+
+# objecto muy comun es data.frame:
+a <- data.frame(col1 = 1:3, col2 = rnorm(3))
+a
+
+# cuales dimensiones tiene:
+dim(a)
+# buscar columnas por nombre:
+a$col1
+#a[,1]
+#a[,"col1"]
+#a[["col1"]]
+
+# data.frame != matriz
+b <- as.matrix(a)
+
+t(b)
+b * 3:1
+
+# bucle basica-----
+z <- NULL
+for (i in 1:3){
+	z[i] <- i ^ 2
+}
+#############################
+# alguna funciones basicas de R:
+sum(c(2,4,6))
+cumsum(c(2,4,6))
+prod(c(2,4,6))
+cumprod(c(2,4,6))
+##############################
+# definimos una funcion:
+
+MiFun <- function(x,y){
+	
+	# escribimos todo legible:
+	(x ^ y) / exp(y)
+	
+	# la funcion es compartible
+	
+	# la funcion es permanente
+	# trasferible dentro de codigo
+}
+MiFun(x,y)
+##################
+
 # devtools nos ayuda bajar packages que esten en github.com (lo que uso yo)
 install.packages("devtools")
 library(devtools)
 
 # ahora instalamos un package que nos hace tablas de vida:
-install_github("timriffe/LifeTable", subdir = "LifeTable")
+install_github("timriffe/LifeTable/LifeTable")
 # otro package que nos vincula con los bases de datos HMD, HFD, y otros:
+install.packages("XML")
 install_github("timriffe/TR1/TR1/HMDHFDplus")
 # otro package que nos hace superficies Lexis baratas
-install_github("timriffe/LexisUtils", subdir = "LexisUtils")
+install_github("timriffe/LexisUtils/LexisUtils")
 # buscamos el package MortalitySmooth de Giancarlo Camarda:
 install.packages("MortalitySmooth")
 
 # tal vez se puede usar este package:
-devtools::load_all("/home/tim/git/DistributionTTD/DistributionTTD/R/DistributionTTD")
-install_github("DistributionTTD/DistributionTTD/R/DistributionTTD")
+#devtools::load_all("/home/tim/git/DistributionTTD/DistributionTTD/R/DistributionTTD")
+#install_github("DistributionTTD/DistributionTTD/R/DistributionTTD")
 # cargar los packages
 library(HMDHFDplus)
-library(LifeTable)
-library(LexisUtils) # por si acaso
+library(LifeTable) # LT()
+library(LexisUtils)      # por si acaso
 library(MortalitySmooth)
+
 ############################################################
 # cargar datos de defunciones y exposiciones de algun pais #
 #----------------------------------------------------------#
@@ -36,15 +97,15 @@ library(MortalitySmooth)
 # para bajar datos directo de la pagina web del HMD
 
 # haz esto primero
-#us <- userInput() # esto es interactivo
-#pw <- userInput()
+us <- userInput() # esto es interactivo
+pw <- userInput()
 
 Pais <- "SWE"
 Def <- readHMDweb(Pais,"Deaths_1x1",username = us, password = pw)
 Exp <- readHMDweb(Pais,"Exposures_1x1",username = us, password = pw)
 
 # habra que cambiar esto:
-setwd("/home/tim/git/ColmexTaller/ColmexTaller/Dia1")
+#setwd("/home/tim/git/ColmexTaller/ColmexTaller/Dia1")
 
 # guardar para poder trabajar sin internet:
 #save(Def, file = "Datos/Def.Rdata")
@@ -73,15 +134,14 @@ edades <- 0:110
 plot(edades, Mx, log = 'y', type = 'l', xlab = "edad", ylab = "tasa mortalidad",
 		main = paste(Pais, sexo, año, sep = ", " ))
 
-ignoramos <- Mx != 0 & !is.nan(Mx)
-Ex[ignoramos] <- NA
-Dx[ignoramos] <- NA
-# ahora generamos una tabla de vida completa:
-devtools::load_all("/home/tim/git/LifeTable/LifeTable",reset=TRUE)
+Ex
 
+Ex[Ex == 0] <- .1
+Dx[Dx == 0] <- .1
 Tabla <- LT(Nx = Ex, Dx = Dx, sex = tolower(sexo), mxsmooth = FALSE)
 names(Tabla)
 head(Tabla$LT)
+
 
 # miramos las columnas distintas:
 plot(edades, Tabla$dx, type = 'l', main = paste("d(x)", Pais, sexo, año, sep = ", " ))
