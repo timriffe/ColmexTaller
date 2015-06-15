@@ -189,6 +189,25 @@ da2fya <- function(da, stagger = FALSE){
 	fya <- Minf0(Mna0(fya / rowSums(fya)))
 	fya
 }
+# como por ejemplo, una forma mas legible y sencillo seria:
+
+da2fya2 <- function(da){
+	N <- length(da)
+	# definimos una matriz vacia:
+	fya <- matrix(0,N,N)
+	# ahora iteramos para rellenarlo con da:
+	for (i in 1:N){
+		# busca la fila i
+		# despues ponemos el vector desde la columna 1 hasta su final
+		fya[i,1:(N-i+1)] <- da[1:(N-i+1)]
+	}
+	# lo unico que hace falta es que las filas suman a 1
+	# nota que rowSums(fya) = l(a) = colSums(fya) en este momento
+	fya <- fya / rowSums(fya)
+	# el ultimo objecto esta devuelto por defecto
+	fya
+}
+
 
 # otra manera de calcular e(x), lo de eqn (3)
 getex <- function(dx, ax = rep(.5, length(dx))){
