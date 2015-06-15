@@ -296,12 +296,3 @@ text(25,.1,"mas informacion = e(x) util")
 # este es mi favorito, porque es totalmente comparable sobre la edad:
 # piensa: si tienes 10 años y te dicen que e(10) = 60 +/- 5 es mucho mas informativo
 # que si tienes 80 años y te dicen que e(80) = 5 +/- 5 (valores inventados...)
-
-
-LT$CV <- sqrt(LT$Var) / LT$ex2 # CV quicker to calculate this way
-LT[, Skurt := getKurtst(dx,ax),    by = list(CNTRY, Sex, Year)]
-# last ones take a while because of MANY splines being fit...
-LT[, q25   := getQuantile(dx,.25), by = list(CNTRY, Sex, Year)]
-LT[, q50   := getQuantile(dx,.5),  by = list(CNTRY, Sex, Year)] # er, median
-LT[, q75   := getQuantile(dx,.75), by = list(CNTRY, Sex, Year)]
-LT[, Mode  := getMode(dx),         by = list(CNTRY, Sex, Year)]
