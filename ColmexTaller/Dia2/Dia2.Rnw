@@ -1,5 +1,4 @@
-%% LyX 2.1.3 created this file.  For more info, see http://www.lyx.org/.
-%% Do not edit unless you really know what you are doing.
+
 \documentclass[11pt, spanish]{article}
 \usepackage[spanish]{babel}
 \selectlanguage{spanish}
@@ -16,12 +15,6 @@
 \geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
 
 \begin{document}
-<<setup, include=FALSE, cache=FALSE>>=
-#library(knitr)
-# set global chunk options
-opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold')
-options(formatR.arrow=TRUE,width=90)
-@
 
 \title{Martes:\\ Vida perdida, vida robada, y la vida ideal}
 
@@ -29,20 +22,133 @@ options(formatR.arrow=TRUE,width=90)
 \author{Tim Riffe}
 
 \maketitle
+\'Esta sessi\'on est\'a basada en un trabajo en curso con mi coautora A{\"i}da
+Sol\'{e} Aur\'{o} de la Universitat Pompeu Fabra (Barcelona). Habr\'a que hacer
+muchos cambios antes de enviar, pero se puede ver un esbozo de un paper sobre el
+tema de hoy aqu\'i: \url{http://paa2015.princeton.edu/abstracts/151532}
+
 \section{?`Cu\'anta vida pierde la poblaci\'on tras la mortalidad?}
 Normalmente se considera la tabla de vida \textit{pura} en el sentido de no
 padecer distorciones debida a la estructura acidentada de la poblaci\'on. El
 proceso de calcular los $M_x$ antecedentes de la tabla de vida ya debe de purgar
 los efectos de irregularidades en la estructura de edad. Por lo tanto se puede
-comparar la mortalidad en distintas poblaciones, puntos de tiempo, o edades. El
-estandarizaci\'on facilita la comparaci\'on. Los eventos en si (las defunciones)
-se suele bajar de inter\'es secundaria, y cuando
+comparar la mortalidad en distintas poblaciones, puntos de tiempo, o edades. La
+estandarizaci\'on implicita de la tabla de vida facilita la comparaci\'on. Los
+eventos en si (las defunciones) se suele bajar de inter\'es secundaria, y cuando
+se habla de defuntos se suele hablar de su numero total, o por causes. Esto
+tiene sentido porque una poblaci\'on grande puede tener m\'as defuntos que una
+poblaci\'on m\'as peque\~na a pesar de tener mortalidad m\'as baja.
 
+Un indicador contracorriente a lo dicho: El PYLL (Person
+Years of Life Lost). Es un indicador muy querido por el GBD (Global Burden of
+Disease), y lo sueles ver tambi\'en en informes oficiales de ministerios de
+salud. Se ve mucho menos en la literatura cientifica de la demografia,
+posiblemente porque no es puro, como la tabla de vida, y no es tan
+comparable sobre el tiempo (debido a cambios en el tama\~no de la poblaci\'on),
+ni entre poblaciones. No obstante, tiene una interpretaci\'on muy directa, y
+presta significado a las defunciones. Tambi\'en creo que se puede usar PYLL para
+comparar causes en el mismo a\~no...
 
+Empezamos con un ejemplo. Supone que 1000 personas de la edad 34 han muerto, y
+que los de 34 a\~nos tienen una esperanza de vida de 45 a\~nos. Pu\'es seg\'un
+la versi\'on sencilla de PYLL, hemos perdido $1000 \times 45 = 45,000$ a\~nos de vida
+debido a las defunciones de gente de 34 a\~nos. Formalmente, tenemos:
+
+\begin{equation}
+\label{eq:PYLL}
+PYLL_x = D_x \cdot e_x \quad \tp
+\end{equation}
+\'Esta definici\'on de PYLL es problem\'atico por varios razones. 1) es igual de
+culpable como el $e_x$ de no reflejar el futuro probable de la mortalidad
+(viene de la vista transversal y no de cohorte). 2) Nadie cree que los defuntos
+tendr\'ian la misma mortalidad que los dem\'as si es que les fueramos a
+reanimar. La mayoria de demografos hoy dir\'ian que una persona reanimada
+tendr\'ia que ser m\'as d\'ebil, o tal vez que tenga un nivel de
+fragilidad que habr\'ia que manter\footnote{La fragilidad (trad.
+\textit{frailty}) es una propiedad individual permanente seg\'un los modelos
+m\'as sencillos de \textit{frailty}. Tambi\'ien es pensable que tenemos
+componentes de \textit{frailty} individuales que cambian seg\'un la estapa de
+vida, y otros componentes que vienen de los estados en que nos encontramos.
+Existen modelos que reproducen la curva de $\mu(x)$ basados en poblaciones de
+individuos, cada uno con solo una pauta individual de Gompertz condicionada por
+su \textit{frailty} individual. Lamento que es imposible decir si el modelo
+es v\'alido porque trayectorias individuales de $\mu(x)$ no son observables,
+pero nos conviene pensar as\'i a veces.} despu\'es de la reanimaci\'on.
+
+Nota que la reanimaci\'on no existe, menos en la religi\'on o la peli
+\textit{Transcendence} (2014). Hablar de PYLL es contrafactual. Por lo tanto,
+hacer un mejor o peor trabajo de aplicar un $e(x)$ ``realista'' podr\'ia ser
+un trabajo de S\'isifo, es decir esfuerza perdida\footnote{Aquella perdici\'on
+de tiempo si que es f\'acil de medir!}. Como estamos en el espacio de
+contrafactuales, nos podemos permitir de hacer supositos pragm\'aticos. La
+cuesti\'on es que si aprendemos algo tras usar modelos sencillos. Entonces la
+ecuaci\'on \eqref{eq:PYLL} es mejor descrito como los a\~nos perdidos por la
+poblaci\'on de la edad $x$ suponiendo una poblaci\'on homogenea en sus factores
+de riesgo, fragilidad individual, y que los reanimados son iguales que los
+dem\'as. Entonces, no es preciso decir que el PYLL nos indica los a\~nos que
+ganar\'iamos tras salvar vidas\footnote{Es igual en la mayoria de perdidas, no?
+e.g., si un banco est\'a robado y la policia luego recupera el dinero, aun as\'i
+no pueden recuperar los intereses que habr\'ian ganado el dinero robado mientras
+estaba perdido, y tampoco el dinero gastado por los ladrones.}, y en vez de eso
+hablamos de los a\~nos perdidos.
+
+Habiendo dicho esto, podemos seguir con el concepto de los a\~nos perdidos. De
+los defuntos, podemos no solo preguntar cuanta vida se ha perdido, pero tambi\'en cuales
+\textit{edades} se ha perdido. Para calcular cuales edades (es decir,
+cuantos en cada edad) hemos perdido, empezamos con el $l_x$ de toda la vida.
+Para los defuntos en cada edad, los a\~nos perdidos en nuestro caso son todos
+los a\~nos en edades m\'as all\'a que $x$. Nota que una de las definiciones de
+$e_0$ es la siguiente:
+
+\begin{equation}
+e(0) = \frac{1}{l(0)} \int _0^\infty l(x) \dd x \tp
+\end{equation}
+y que tambi\'en funciona lo mismo con todas las edades:
+
+\begin{equation}
+\label{eq:ex}
+e(x) = \frac{1}{l(x)} \int _x^\infty l(t) \dd t \tp
+\end{equation}
+
+El objecto que queremos para redistribuir los defuntos sobre las edades que $x$
+es parecido al \eqref{eq:ex}. Nota que suma al mismo $e(x)$ que vemos en la
+equaci\'on \eqref{eq:PYLL}. Formalmente, los estocs perdidos por edad  (la vida
+perdida) tras las defunciones en la edad $x$ (las vidas perdidas), $P^p(x+y|x)$,
+puede ser:
+\begin{equation}
+P^p_x(x+y|x) = D(x) \cdot \frac{l(x+y)}{l(x)} \quad\tp
+\end{equation}
+El valor de $P^p_x(x+y|x)$ es menor que el total de a\~nos personas perdidos en la
+edad $x+y$, $P^p(x+y)$, ya que hay personas en otras edades que tambi\'en pasar\'ian por
+la misma edad, y lo que buscamos es cumulativo. Entonces:
+\begin{equation}
+P^p(x+y) = \int _{x=0}^{x+y} \int _{y'=0}^{x+y-y'} D(x) \cdot \frac{l(x+y')}{l(x)} \dd y' \dd x \tp
+\end{equation}
+El valor de $P^p(x+y)$, o bien, sin la nececidad de refir a la equaci\'on
+anterior, $P^p(x)$, nos dice una versi\'on de lo que es la estructura de edad
+cumulativa perdida tras la mortalidad en algun momento. Se puede representar
+gr\'aficamente por sexo y edad con una pir\'amide. Lo haremos en R ;-)
+
+Ahora, si lo hasta ahora se ha tratado de defunciones en general, se puede
+traducir lo mismo al caso de la mortalidad por causas. En este caso las formulas
+son iguales, pero trabajamos con $D^c(x)$, las defunciones en la edad $x$ por
+causa $c$, y la cantidad que queremos calcular es $P^p_c(x)$, el estoc
+cumulativo de personas en la edad $x$ que hemos perdido debido a la causa $c$
+para el a\~no de datos que tenemos. Los resultados tienen mejor sabor si en vez
+de usar la mortalidad de antes ($l(x)$, $\mu(x)$, etc) se usa la mortalidad
+general despu\'es de eliminar or reducir la causa $c$. Pero, como dicho antes
+esto es un trabajo de S\'isifo: si vamos a eliminar una causa, porque no usar
+tambi\'en una proyecci\'on buena de la mortalidad futuro para cada cohorte?
+Luego habr\'ia que imaginar como los salvados son d\'ebiles, y nunca se acaba, y
+el resultado se aleja m\'as y m\'as de lo interesante tras confundir que lo que
+queremos saber es cuanto hemos perdido, no cuantos ganar\'iamos tras salvar. 
+
+*Si se desea hablaremos sobre la competici\'on de causas.
 
 \section{Una tabla de vida de mejores pr\'acticas}
 
-
+Si hay tiempo en clase hablar\'e de esto, y podemos dejar un ejercicio de datos
+para el viernes si se desea. 
 
 \bibliographystyle{plainnat}
 %\bibliographystyle{demography}
