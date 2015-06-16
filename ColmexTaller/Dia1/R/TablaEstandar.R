@@ -118,7 +118,7 @@ head(Exp)
 
 # elige hombres o mujers y algun año
 sexo <- "Male"
-año  <- 2000
+año  <- 1800
 
 # sabemos que va de la edad 0 a 110+
 Dx <- Def[Def$Year == año, sexo]
@@ -134,11 +134,26 @@ edades <- 0:110
 plot(edades, Mx, log = 'y', type = 'l', xlab = "edad", ylab = "tasa mortalidad",
 		main = paste(Pais, sexo, año, sep = ", " ))
 
-Ex
-
 Ex[Ex == 0] <- .1
 Dx[Dx == 0] <- .1
 Tabla <- LT(Nx = Ex, Dx = Dx, sex = tolower(sexo), mxsmooth = FALSE)
+
+names(Tabla)
+Tabla$lx
+
+mxalx <- function(mx){
+	# poner 0 donde mx no esta definida
+	mx[is.nan(mx)] <- 0
+	# cuantos elementos en mx?
+	N  <- length(mx)
+	# suma cumulativa de mx, muchas veces llamada Hx
+	Hx <- cumsum(mx)
+	# manera barata de hacer lx:
+	c(1,exp(-Hx))[1:N] # devolvemos solo los primeros N elementos
+}
+
+plot(edades, Tabla$lx - mxalx(Mx))
+
 names(Tabla)
 head(Tabla$LT)
 
@@ -170,28 +185,28 @@ Minf0 <- function(M){
 
 # esta funcion hace lo de la equacion (2) de la lectura. 
 # se puede replicar de manera mas intuitivo si se quiere
-da2fya <- function(da, stagger = FALSE){
-	N       <- length(da)
-	ay      <- 1:N - 1
-	
-	da      <- Mna0(da)   # remove NAs if any       
-	da      <- c(da, da * 0) / sum(da) # pad out with 0s
-	fya     <- matrix(da[col(matrix(nrow = N, 
-									ncol = N)) + ay], 
-			nrow = N, 
-			ncol = N, 
-			dimnames = list(Ex = ay, 
-					Age = ay)
-	)
-	if (stagger){
-		fya <- (fya + cbind(fya[, 2:ncol(fya)], 0)) / 2
-	}
-	fya <- Minf0(Mna0(fya / rowSums(fya)))
-	fya
-}
+#da2fya <- function(da, stagger = FALSE){
+#	N       <- length(da)
+#	ay      <- 1:N - 1
+#	
+#	da      <- Mna0(da)   # remove NAs if any       
+#	da      <- c(da, da * 0) / sum(da) # pad out with 0s
+#	fya     <- matrix(da[col(matrix(nrow = N, 
+#									ncol = N)) + ay], 
+#			nrow = N, 
+#			ncol = N, 
+#			dimnames = list(Ex = ay, 
+#					Age = ay)
+#	)
+#	if (stagger){
+#		fya <- (fya + cbind(fya[, 2:ncol(fya)], 0)) / 2
+#	}
+#	fya <- Minf0(Mna0(fya / rowSums(fya)))
+#	fya
+#}
 # como por ejemplo, una forma mas legible y sencillo seria:
 
-da2fya2 <- function(da){
+da2fya <- function(da){
 	N <- length(da)
 	# definimos una matriz vacia:
 	fya <- matrix(0,N,N)
@@ -199,7 +214,7 @@ da2fya2 <- function(da){
 	for (i in 1:N){
 		# busca la fila i
 		# despues ponemos el vector desde la columna 1 hasta su final
-		fya[i,1:(N-i+1)] <- da[1:(N-i+1)]
+		fya[i,1:(N-i+1)] <- da[i:N]
 	}
 	# lo unico que hace falta es que las filas suman a 1
 	# nota que rowSums(fya) = l(a) = colSums(fya) en este momento
@@ -209,10 +224,13 @@ da2fya2 <- function(da){
 }
 
 
+matplot(edades,t(da2fya(Tabla$dx))[,c(1,11,21,31,41,51,61,71,81,91)],type='l',col = "#00000050", lty = 1, ylim = c(0,.4))
+dx <- Tabla$dx
+ax <- Tabla$ax
 # otra manera de calcular e(x), lo de eqn (3)
 getex <- function(dx, ax = rep(.5, length(dx))){
 	fya <- da2fya(dx)
-	rowSums((col(fya) - (1 - ax)) * fya)
+	rowSums((col(fya) - .5) * fya)
 }
 
 # funcion de momentos, equacion (4) de la lectura

@@ -26,10 +26,12 @@ Ex <- c(1155746, 1146185, 1140057, 1141653, 1148602, 1154777, 1157785,
 		45638, 39798, 34340, 29313, 24750, 20681, 17100, 13987, 11306, 
 		9006, 7049, 5395, 4027, 2920, 2051, 1388, 903, 560, 331, 187, 
 		99, 49, 22, 9)
+Mx <- Dx / Ex
 #############################################################################
 # hoy vamos a definir unas funciones sencillas. demasiada sencillas de hecho
 #############################################################################
 
+#plot(0:109, Dx/Ex, type = 'l', log = 'y')
 # 1) convertir Mx a lx rapidamente
 # fingiendo que estamos en tiempo continuo
 mx2lx <- function(mx){
@@ -44,24 +46,27 @@ mx2Lx <- function(mx){
 }
 # 3) convertir mx a ex rapidamente:
 mx2ex <- function(mx){
+	# lx es el divisor final para calcular ex
+	lx1 <- mx2lx(mx)
+	# usamos Lx para calcular Tx sobre la marcha
 	Lx  <- mx2Lx(mx)
 	# la parte de la izquierda es Tx, luego condicionar con lx
-	(rev(cumsum(rev(Lx))) / lx1)[1:length(mx)]
+	(rev(cumsum(rev(Lx))) / lx1)
 }
 
 ##############################################
 # primero PYLL:
 # un poco limpieza...
 Mx <- Dx / Ex
-Mx[is.nan(Mx) | is.infinite(Mx)] <- 0
 
 edades <- 0:109
 plot(edades, Mx, type = 'l', log = 'y', 
 		main = "suavizado fuertamente?\n *no importa, pero mas vale saber los supositos\n Parece parametrico casi")
-
-# el PYLL estandar se define como Dx * ex
-PYLLx <- Dx * mx2ex(Mx)
-barplot(PYLLx, main = "mucha vida perdida tras la mortalidad infantil!")
+########################################################
+#
+# el APP estandar se define como Dx * ex
+APPx <- Dx * mx2ex(Mx)
+barplot(APPx, main = "mucha vida perdida tras la mortalidad infantil!")
 # 14392 PYLL0 tras 182 defuniones de infantes!
 
 # ahora, las edades perdidos pero estos infantes se extienden sobre todas las edades superiores..
@@ -69,24 +74,62 @@ barplot(PYLLx, main = "mucha vida perdida tras la mortalidad infantil!")
 
 # queremos lx condicionada por si mismo, asi:
 # 1) definimos una matriz vacia con las dimensiones corectas
-N  <- length(Dx)
-LX <- matrix(0, nrow = N, ncol = N)
-lx <- mx2lx(Mx)
-Lx <- mx2Lx(Mx)
-# ahora lo rellenamos iterativamente:
-for (i in 1:N){
-	LX[i,i:N] <- Lx[i:N]
-}
-# ahora condicionado por supervivencia, lx
-LX <- LX / lx
 
+hazmeLX <- function(mx){
+	N  <- length(mx)
+	# caja vacia para asignar Lx en bucle abajo
+	LX <- matrix(0, nrow = N, ncol = N)
+	# vector de lx, para reescalar Tx al final
+	lx <- mx2lx(mx)
+	# vector de Lx suponiendo lineal entre edades
+	Lx <- mx2Lx(mx)
+    # ahora lo rellenamos iterativamente:
+	for (i in 1:N){
+		LX[i,i:N] <- Lx[i:N]
+	}
+	#######
+	 ######
+	  #####
+	   ####
+	    ###
+		 ##
+		  #
+	# los valors en cada fila suman a Tx
+    # ahora condicionado por supervivencia, lx
+	LX <- LX / lx
+	# ahora los valors de cada fila suman a ex
+	LX
+}
 # compare sumas: uau son iguales!
-sum(Dx * LX) ; sum(PYLLx)
+sum(Dx * hazmeLX(Mx)) ; sum(APPx)
 
 barplot(colSums(Dx * LX), main = "misma cantidad, pero redistribuida", border = NA, space = 0)
 
 # lo mismo pero desagregado por x de Dx ( variantes de gris)
 barplot(Dx * LX, main = "misma cantidad, pero redistribuida", border = NA, space = 0)
+
+PPX <- Dx * LX
+
+Sencillas <- row(PPX) - 1
+Fac <- 10
+
+Grup <- Sencillas - Sencillas %% Fac
+unicas <- unique(Grup[,1])
+ i <- 1
+ ppxout <- NULL
+for (i in 1:11){
+	
+	PPXi <- matrix(PPX[Grup == unicas[i]],ncol = ncol(PPX))
+	ppxi <- colSums(PPXi)
+	ppxout <- rbind(ppxout, ppxi)
+}
+
+barplot(ppxout, main = "misma cantidad, pero redistribuida", border = NA, space = 0)
+
+MiRampa <- colorRampPalette(c("yellow","orange","red"), space = "Lab")
+MiRampa(11)
+barplot(ppxout, main = "misma cantidad, pero redistribuida", 
+		border = NA, space = 0, col = MiRampa(11))
 
 ##########################################################
 # paramos aqui: sugiero intentarlo con causes el viernes
