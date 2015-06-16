@@ -1,24 +1,31 @@
 
 ############################################################
-# suponemos que las instalaciones de ayer ahora funcionan!
-# si no es asi, busca Tim!
-############################################################
 
-# 1) carga algun package:
-
-library(HMDHFDplus)
-
-# otra vez a meter contraseña, etc. Definelo como variable
-# para no dejar tu info guardado en el fichero de R...
-us <- userInput() # esto es interactivo
-pw <- userInput()
-
-Pais <- "SWE"
-Def <- readHMDweb(Pais,"Deaths_1x1",username = us, password = pw)
-Exp <- readHMDweb(Pais,"Exposures_1x1",username = us, password = pw)
-# Def <- local(get(load("Dia1/Datos/Def.Rdata")))
-# Exp <- local(get(load("Dia1/Datos/Exp.Rdata")))
-
+# Datos = 2010 Hombres, Mexico, gracias Victor!
+Dx <- c(17219, 1178, 653, 482, 407, 371, 353, 347, 350, 364, 394, 444, 
+		521, 630, 773, 946, 1140, 1344, 1544, 1732, 1899, 2043, 2163, 
+		2259, 2334, 2391, 2434, 2465, 2486, 2501, 2515, 2531, 2553, 2582, 
+		2617, 2653, 2690, 2724, 2756, 2786, 2815, 2846, 2882, 2925, 2978, 
+		3042, 3117, 3203, 3297, 3400, 3509, 3622, 3735, 3849, 3961, 4074, 
+		4187, 4301, 4418, 4537, 4658, 4780, 4902, 5027, 5154, 5287, 5424, 
+		5567, 5711, 5853, 5991, 6120, 6236, 6326, 6373, 6372, 6353, 6346, 
+		6311, 6214, 6083, 5943, 5785, 5603, 5405, 5188, 4942, 4667, 4367, 
+		4046, 3712, 3375, 3039, 2710, 2390, 2080, 1780, 1493, 1222, 972, 
+		750, 558, 399, 274, 179, 111, 65, 35, 18, 8)
+Ex <- c(1155746, 1146185, 1140057, 1141653, 1148602, 1154777, 1157785, 
+		1156630, 1150848, 1142343, 1133299, 1124918, 1119408, 1118061, 
+		1119274, 1119380, 1114658, 1103012, 1084576, 1061014, 1034319, 
+		1006327, 978592, 952250, 928124, 906693, 887792, 870999, 856095, 
+		843161, 832438, 824167, 818345, 814362, 810808, 806085, 798981, 
+		788633, 774578, 757033, 736719, 714435, 691045, 667449, 644309, 
+		621974, 600474, 579646, 559346, 539424, 519655, 499809, 479753, 
+		459473, 439131, 418969, 399173, 379924, 361398, 343600, 326452, 
+		309880, 293951, 278736, 264286, 250618, 237744, 225570, 213933, 
+		202702, 191807, 181163, 170669, 160090, 149156, 137940, 127213, 
+		117544, 108162, 98556, 89305, 80771, 72794, 65300, 58349, 51832, 
+		45638, 39798, 34340, 29313, 24750, 20681, 17100, 13987, 11306, 
+		9006, 7049, 5395, 4027, 2920, 2051, 1388, 903, 560, 331, 187, 
+		99, 49, 22, 9)
 #############################################################################
 # hoy vamos a definir unas funciones sencillas. demasiada sencillas de hecho
 #############################################################################
@@ -44,21 +51,17 @@ mx2ex <- function(mx){
 
 ##############################################
 # primero PYLL:
-
-sexo <- "Male"
-año  <- 2000
-
-# sabemos que va de la edad 0 a 110+
-Dx <- Def[Def$Year == año, sexo]
-Ex <- Exp[Exp$Year == año, sexo]
-
 # un poco limpieza...
 Mx <- Dx / Ex
 Mx[is.nan(Mx) | is.infinite(Mx)] <- 0
 
+edades <- 0:109
+plot(edades, Mx, type = 'l', log = 'y', 
+		main = "suavizado fuertamente?\n *no importa, pero mas vale saber los supositos\n Parece parametrico casi")
+
 # el PYLL estandar se define como Dx * ex
 PYLLx <- Dx * mx2ex(Mx)
-barplot(PYLLx, main = "mucha vida perdido tras la mortalidad infantil!")
+barplot(PYLLx, main = "mucha vida perdida tras la mortalidad infantil!")
 # 14392 PYLL0 tras 182 defuniones de infantes!
 
 # ahora, las edades perdidos pero estos infantes se extienden sobre todas las edades superiores..
