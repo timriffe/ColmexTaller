@@ -15,7 +15,13 @@ Pais <- "SWE"
 Def <- readHMDweb(Pais,"Deaths_1x1",us,pw)
 Exp <- readHMDweb(Pais,"Exposures_1x1",us,pw)
 
-Nac <- readHFDweb(Pais,"birthsRR",us,pw)
+# Tendria que funcionar, pero no me carga la pagina web hoy, no se porque...
+#Nac <- readHFDweb(Pais,"birthsRR",us,pw)
+# plan B: cargar datos localmente (mira en carpeta /Dia3/datos/
+
+### CAMBIA ESTO a tu carpeta de Dia3!!! ############
+setwd("/home/tim/git/ColmexTaller/ColmexTaller/Dia3")
+Nac <- dget("datos/HFDSWE.txt")
 
 # los datos de HMD y HFD son de dimensiones distintas
 
@@ -24,7 +30,7 @@ range(Nac$Year)
 range(Def$Year)
 
 # y los nacimientos de HFD no estan clasificados por sexo:
-head(Nac)
+
 # y recuerde que queremos hijas nacidas a madres.
 # asi que tendremos que dividir los nacimientos segun algun suposito
 # lo normal es 1.05 ... 
@@ -37,7 +43,8 @@ RSN <- 1.05
 # que se cambia un poco cada año y que a veces parece haber tendencias.
 # Seguimos con el 1.05 ...
 ##########################################################################
-Nac$Total <- Nac$Total * PF # claro, solo haz esto una vez
+Nac$Births <- Nac$Births * PF
+#Nac$Total <- Nac$Total * PF # claro, solo haz esto una vez
 ##########################################################################
 
 # herramientas para seleccionar datos:
@@ -49,10 +56,14 @@ Dx <- Def[Def$Year == año, sexo]
 Ex <- Exp[Exp$Year == año, sexo]
 # N son nacimientos para nosotros, pero nota que muchas veces en
 # la literatura se usa para estocs de poblacion (Px)
-Nx <- Nac$Total[Nac$Year == año]
-# los Nx van de la edad 12 al 55 solo. 
+
+Nx <- Nac$Births[Nac$Year == año][1:111]
+# Nx <- Nac$Total[Nac$Year == año] # para datos bajados del HFD directamente
+# los Nx van de la edad 12 al 55 solo.
+
+#### necesario si hemos bsucado datos del HFD, pero los hemos copiado localmente
 # añadimos 0s antes y despues para alinear edades
-Nx <- c(rep(0,12),Nx,rep(0,55))
+#Nx <- c(rep(0,12),Nx,rep(0,55))
 # calculamos tasas de fecundidad:
 fx <- Nx / Ex
 # limpieza, sino tenemos casos de NaN:
@@ -118,4 +129,13 @@ log(R0) / Mbar # diferente en cuarto digito, no mal!
 
 #####################################################################
 # ahora a repitir para poblaciones tanatologicas
+
+# hace falta una matriz de dx parecida a la de f(y|x),
+# pero no escalada:
+dx <- Tabla$dx
+N  <- length(dx)
+
+
+ddx <- matrix(0,)
+
 
