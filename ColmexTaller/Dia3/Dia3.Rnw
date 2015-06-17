@@ -23,21 +23,192 @@ opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold')
 options(formatR.arrow=TRUE,width=90)
 @
 
-\title{Miercoles:\\ Perspectivas sobre la renovaci\'on y la estabilidad}
+\title{Miercoles:\\ Dos perspectivas sobre la renovaci\'on de poblaci\'on}
 
 
 \author{Tim Riffe}
 
 \maketitle
-\section{Dos perspectivos sobre la renovac\'on}
+\section{Dos perspectivos sobre la renovaci\'on}
+\subsection{la cronol\'ogica}
+Algunos dir\'ian que la demografia formal moderno empez\'o con las obras de A.
+Lotka \& Sharpe a principios del siglo XX (e.g., 1911, pero tambi\'en en otras obras de Lotka). La verdad es que hab\'ia mucho
+trabajo formal antes de aquello, de Zeuner, Lexis, y otros, sobre todo con la tabla de vida y la
+medici\'on de las tasas de mortalidad. Lotka nos proporcion\'o una equaci\'on
+que une las fuerzas de mortalidad y fecundidad en un modelo unificado y
+parsimonio que acab\'o motivando casi todo el trabajo de poblaciones estables
+que ha venido desde entonces. Pero otros tambi\'en lo han hecho en otras
+formas matem\'aticas. P.
+Leslie (1945) ha hecho lo mismo en forma matricial, y McKendrick (1926) \& von
+Foerster (1959) han hecho lo mismo en forma diferencial. Seg\'un el campo de
+investigaci\'on se suele aprender unos antes del otro. En la demograf\'ia
+formal prestamos mas peso a lo de A. Lotka, aunque hay mucho trabajo
+actualmente en la \'area de matrices, sobre todo por H. Caswell. Los
+matem\'aticos aplicados suelen preferir las equaciones de McKendrick \& von
+Foerster. Vamos a seguir con Lotka. Hay maneras distintas de derivarlo, pero yo
+encuento que uno es m\'as intuitiva.
 
+Las reglas del modelo sencillo:
+\begin{enumerate}
+\item{Las tasas de fecundidad y mortalidad no cambian.}
+\item{La poblaci\'on est\'a cerrada, i.e., la \'unica manera de entrar es tras
+el nacimiento y la \'unica manera de salir es tras morir.}
+\item{Solo hay un sexo, as\'i que la fecundidad es asexual, imaginamos. Hay
+maneras de incorporar dos sexos, pero los ignoramos ahora.}
+\end{enumerate}
+
+Definimos una serie de
+nacimientos, $N(t)$, donde $t$ es el a\~no de datos, y $N$ es el n\'umero total
+de nacimientos en aquel a\~no. En tiempo continuo, tenemos:
+\begin{equation}
+\label{eq:Nx}
+N(t) = \int P(x,t) \cdot f(x) \quad\tc
+\end{equation}
+donde $P(x,t)$ son poblaciones por edad en el a\~no $t$, y $f(x)$ son nuestras
+tasas de fecundidad que son fijos en el tiempo (y por lo tanto no hace falta un
+$t$). Evidentamente, los estocs de pobaci\'on en el a\~no $t$ son los
+supervivientes de los nacimientos en el pasado. Entonces, tenemos:
+\begin{equation}
+N(t) = \int N(t-x)\cdot l(x) \cdot f(x) \quad\tp
+\end{equation}
+En nuestro caso la curva de supervivencia tampoco cambia en el tiempo: esta
+fijo. Ahora imaginamos que la serie de nacimientos empieza de forma accidentada,
+es decir no es estable. Si dejamos que la poblaci\'on desarolla de \'esta forma
+se acabar\'a suavizandose de tal forma que la raz\'on entre los nacimientos
+de a\~nos sucesivos es constante. Es decir, que la poblaci\'on crece con una
+tasa constante. Los nacimientos en el a\~no $t$ estar\'an relacionados con los
+nacimientos del a\~no $t-x$ as\'i:
+\begin{equation}
+\label{eq:ergo}
+N(t) = N(t-x) \cdot\frac{1}{e^{-rx}} \quad \tp
+\end{equation}
+Hay maneras distintas de saber que \eqref{eq:ergo} acabar\'a pasando. Se
+encuentra una explicaci\'on m\'as intuitiva en \cite{arthur1982ergodic}.
+Tambi\'en se puede dibujar un grafo del sistema por edades y estados, y se
+ver\'a que cumple con las condiciones del teorema de Perron-Frobenius
+\citep{perron1907theorie,frobenius1908matrizen}, y tras darse cuenta de esto ya
+basta para concluir que ``tiene que estabilizarse en alg\'un momento''. Lo
+dibujaremos en clase. Integrando \eqref{eq:ergo} en la demonstraci\'on, tenemos:
+\begin{equation}
+N(t) = \int N(t)e^{-rx}\cdot l(x) \cdot f(x) \quad\tc
+\end{equation}
+y se ve que ahora (decimos 100+ a\~nos m\'as en el futuro que el inicio del
+ejercicio), $N(t)$ es una funci\'on de si mismo! De hecho, como $N(t)$ est\'a
+tanto dentro como fuera del integral, podemos dividirlo todo por $N(t)$ y sale
+lo que conocemos como la equaci\'on Lotka:
+\begin{equation}
+\label{eq:lotka}
+1 = \int e^{-rx}\cdot l(x) \cdot f(x) \quad\tc
+\end{equation}
+y ya nada es funci\'on del tiempo, $t$. Es un sistema de renovaci\'on
+que una vez estabilizada se queda atrapada, fija, y siempre cumple con
+\eqref{eq:lotka}. Entonces, se puede optimizar $r$ de varias maneras, y muchas
+veces el objectivo es saber que valor tiene $r$. Para profundizarse m\'as,
+recomiendo \citet{coale2015growth}.
+
+\subsection{la t\'anatol\'ogica}
+Ahora describo como tambi\'en funciona en terminos de la edad t\'anatol\'ogica,
+es decir los a\~nos restantes de vida. Imaginamos que tenemos una poblaci\'on
+estructurada por a\~nos restantes. El martes he dibujado algunos en la pizzara,
+pero pueden venir en formas distintas. Por sencillez, imagina una pir\'amide de
+poblaci\'on t\'ipica, pero con perfil suave. Ahora, si tu pir\'amide ha sido en
+forma de uan pir\'amide, es decir con la base gorda, cambia el im\'agen a una
+pir\'amide ``envejecida'', como la del Jap\'on. Esto ser\'ia en muchos casos la
+traducci\'on de una pir\'amide cronol\'ogica en una t\'anatol\'ogica. Y la
+heuristica funciona al reves.
+
+Ahora imaginamos que tenemos tasas de fecundidad estructuradas por a\~nos
+restantes de vida. Esto es ya un concepto raro. Primero, la curva de fecundidad
+por a\~nos restantes es mucho m\'as amplia que la por edad cronol\'ogica.
+Empieza con el tiempo restante de cero (es decir, la mortalidad materna), y
+acaba tal vez con 100. Jean Calment ha sobrevivido hasta los 122+ a\~nos, y
+ten\'ia una hija cuando ten\'ia unos 22 a~nos. Por lo tanto, al parir ten\'ia la
+edad t\'anatol\'ogica de 100! No sabemos si es un record, pero ser\'a cerca.
+Entonces la distribuci\'on de fecundidad por a\~nos restantes se extiende desde
+0 a 100 como m\'inimo. Tambi\'en probablemente es unimodal. Probablemente la
+moda se encuentra entre los 50 y 75 a\~nos restantes. Probablemente no varie
+tanto sobre el tiempo como la distribuci\'on cronol\'ogica de la fecundidad.
+Digo probablemente porque no sabemos, pero podemos approximar la distribuci\'on
+usando unos supositos de la tabla de vida.\footnote{se puede ver ejemplos de
+\'estas distribuciones en un paper en progreso aqu\'i:
+\url{https://github.com/timriffe/ThanoRepro}. Esto viene de un capitulo de mi
+t\'esis, pero el articulo aun no est\'a enviado.}
+
+Llamamos la poblaci\'on clasificada por a\~nos restantes $P(y)$, y la fecundidad
+por a\~nos restantes $f^\star (y)$. Los nacimientos en el a\~no $t$ entonces
+son:
+\begin{equation}
+N(t) = \int P(y,t) \cdot f^\star (y) \quad \tc
+\end{equation}
+parecida a la equaci\'on \eqref{eq:Nx}, de hecho en el a\~no de partida
+siempre dan el mismo $N(t)$. Como hemos visto en clase el martes, el $P(y)$ es:
+
+\begin{align}
+P(y) &= \int _0^\infty P(x) \cdot \mu (x+y) \cdot \frac{l(x+y)}{l(x)} \dd x \label{eq:Py} \\
+     &= \int _0^\infty P(x) \cdot f(y|x) \dd x \tp 
+\end{align}
+As\'i podemos cambiar $P(y)$ por su equivalente:
+\begin{equation}
+N(t) = \int_0^\infty \int _0^\infty  P(x,t) \cdot f(y|x) \cdot f^\star (y) \dd x \dd y \quad \tp
+\end{equation}
+Resulta que ahora tenemos usos redundantes de la letra `f', as\'i que voy a
+cambiar $f(y|x) \Rightarrow z(y|x)$ para espero no confundirnos. Entonces:
+\begin{equation}
+N(t) = \int_0^\infty \int _0^\infty  P(x,t) \cdot z(y|x) \cdot f^\star (y) \dd x \dd y \quad \tp
+\end{equation}
+Como en el caso anterior, podemos relacionar el $P(x,t)$ con los nacimientos en
+el pasado:
+\begin{equation}
+\label{eq:Ny1}
+N(t) = \int_0^\infty \int _0^\infty  N(t-x)\cdot l(x) \cdot z(y|x) \cdot f^\star (y) \dd x \dd y \quad \tp
+\end{equation}
+Mira la equaci\'on \eqref{eq:Py} para recordar que $z(y|x)$ tiene un $l(x)$ en
+el denominador, y nota que en la equaci\'on \eqref{eq:Ny1} acabmos
+multiplicandolo por otro $l(x)$. Entonces es igual que:
+\begin{equation}
+\label{eq:Ny2}
+N(t) = \int_0^\infty \int _0^\infty  N(t-x)\cdot \mu(x+y)\cdot l(x+y) \cdot f^\star (y) \dd x \dd y \quad \tc
+\end{equation}
+y esto se reduce aun m\'as porque $\mu(x) \cdot l(x) = d(x)$ de la tabla de
+vida:
+\begin{equation}
+\label{eq:Ny2}
+N(t) = \int_0^\infty \int _0^\infty  N(t-x)\cdot d(x+y) \cdot f^\star (y) \dd x \dd y \quad \tc
+\end{equation}
+Ahora pasa lo mismo que antes. Si dejamos que la poblaci\'on se evoluciona con
+esa misma fecundidad y mortalidad entonces los nacimientos de la sistema se
+acaben cambiando de forma proporcional, a\~no por a\~no, seg\'un la equaci\'on
+\eqref{eq:ergo}, y se puede demostrar usando el mismo tipo de grafo y invocando
+el teorema Perron-Frobenius. Si lees el articulo de Arthur (1982) tiene
+todavia m\'as sentido, como nuestra distribuci\'on de la fecundidad en el caso
+de la edad t\'anatol\'ogica es m\'as gorda (menos curt\'osis!). Entonces
+modificamos lo anterior para incorporar esta regularidad:
+\begin{equation}
+\label{eq:Ny3}
+N(t) = \int_0^\infty \int _0^\infty  N(t)e^{-rx}\cdot d(x+y) \cdot f^\star (y) \dd x \dd y \quad \tp
+\end{equation}
+Para acabar, dividimos por $N(t)$ y tenemos la equaci\'on final:
+\begin{equation}
+\label{eq:Ny4}
+1 = \int_0^\infty \int _0^\infty e^{-rx}\cdot d(x+y) \cdot f^\star (y) \dd x \dd y \quad \tp
+\end{equation}
+Compara con \eqref{eq:lotka} y se ve que no son muy diferentes, sobre todo
+tomando en cuenta que $l(x)$ es la suma de $d(x' \ge x)$. Se puede demostrar que
+1) solo hay un $r$ real que cumple el sistema, y 2) que en el caso de una
+poblaci\'on ya estable que el mismo $r$ tiene que salir de \eqref{eq:lotka} y
+\eqref{eq:Ny4}. Tambi\'en tiene su propia matriz tipo Leslie, y un grafo
+particular.
 
 
 \section{La ergodicidad y el momento}
-
+Si hay tiempo en la parte de practicas podemos demostrar estos dos conceptos con
+datos. 
 
 
 \bibliographystyle{plainnat}
 %\bibliographystyle{demography}
   \bibliography{references}  
+
+
+
 \end{document}
