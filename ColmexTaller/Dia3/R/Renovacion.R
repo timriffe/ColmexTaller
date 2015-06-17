@@ -197,117 +197,192 @@ plot(edades, colSums(dxy * exp(-x*-r)) / sum(dxy * exp(-x*-r)),
 lines(edades, exp(-x*-r)*Lx / sum(exp(-x*-r)*Lx), 
 		col = "blue")
 
+################################################################
+# aqui hemos hecho una pausa, y yo he empezado tal cual de programar
+# sin explicarme bien. Notas añadida después
+################################################################
 # ahora queremos optimizar el 'r' de la equacion de renovacion
 # tanatologica:
-
+# esta funcion sigue la pauta de la de antes para Lotka,
+# adentro se ve una version discreta 
 ThanoMin <- function(rt,dxy,fy,x=.5:110.5){
-	abs(1 - sum(colSums(dxy * exp(-x*rt)) * fy))
+	abs(1 - sum(colSums(dxy * exp(-x*rt)) * fy)) # valor absoluto pk estamos minimizando
 }
-
+# esto funciona como lo de antes, que explique en la pizarra
 rt <- optimize(ThanoMin, c(-.05,.05), dxy= dxy, fy=fy, tol = 1e-15)$minimum
 
+# comparamos el 'r' crono con el 'r' tano
 r ; rt
-sum(colSums(dxy * exp(-x*.011)) * fy)
+# debe de ser igual a 1
+sum(colSums(dxy * exp(-.5:110.5*rt)) * fy)
 
+
+# aqui he preguntado por alguno deseo, y se ha pedido piramides
+# instalamos otro package desde github entonces para eso:
 library(devtools)
 install_github("timriffe/Pyramid/Pyramid")
-
+# cargar package
 library(Pyramid)
-
+# tiene demasiadas argumentos
 args(Pyramid)
 
+# claro, hasta ahora solo mujers, pero aqui necesitamos los dos sexos
 Exh <- Exp[Exp$Year == año, "Male"]
 
+# esto hemos ido modificando iterativamente para ver como cambiar cosas
 Pyramid(Exh, Ex, grid = FALSE,
 		fill.males="royalblue",fill.females="royalblue",
 		coh.axis = TRUE,year = 1900, prop = FALSE)
-segments(0,0,0,110,col = 'white')
+# aun asi queda un poco feita
+segments(0,0,0,110,col = 'white') 
 args(Pyramid)
 
-Dxh <- Def[Def$Year == año,"Male"]
+# mus guai es descomponer el piramide por años restantes,
+# luego dibujarlo de forma mas impactante.
+# hace falta mortalidad de hombres 'h'
 
+# defunciones
+Dxh <- Def[Def$Year == año,"Male"]
+# limpieza
 Dxh[Dxh == 0] <- .1
 Exh[Exh == 0] <- .1
-
+# calculamos la tabla de vida para los hombres
 Tablah <- LT(Exh, Dxh, mxsmooth = FALSE)
 
-fyxh <- da2fya(Tablah$dx)
-fyxf <- da2fya(Tabla$dx)
+# calculamos el dx reescalada para poder descomponer = f(y|x)
+fyxh <- da2fya(Tablah$dx) # hombres
+fyxf <- da2fya(Tabla$dx)  # mujeres
 
+# Ex = poblaciones mujers | Exh = pob hombres
+# Pxy son matrices de poblaciones por años vividos y restantes
+# sea conciente de que esto es muy aproximado y tiene unos 
+# supositos fuertes, pero lo hacemos porque aun asi da informacion
 Pxyf <- Ex * fyxf
 Pxyh <- Exh * fyxh
 
+# ahora: tiene demasiados colores, feito
 Pyramid(Pxyh, Pxyf, grid = FALSE,
 		coh.axis = TRUE,year = 1900, prop = FALSE, 
 		border.males = NA, border.females = NA
 		)
 segments(0,0,0,110,col = 'white')
 
+# aqui los colores buenos (sabios) de Cynthia Brewer
 library(RColorBrewer)
-display.brewer.all()
-cols <- brewer.pal(9, "YlGn")
-colRampa <- colorRampPalette(cols, space = "Lab")
-colRampa(111)
+display.brewer.all() # elijimos paleta
+cols <- brewer.pal(9, "YlGn") # desde amarillos hasta verdes
+colRampa <- colorRampPalette(cols, space = "Lab") # construimos rampa de interpolacion entre estos colors
+colRampa(111) # tenemos 111 categorias de años restantes, nos hace 111 colores...
 
+# mejor que antes, pero aun no legible, hay que agrupar edades
 Pyramid(Pxyh, Pxyf, grid = FALSE,
 		coh.axis = TRUE,year = 1900, prop = FALSE, 
 		border.males = NA, border.females = NA, 
 		fill.males = colRampa(111), fill.females = colRampa(111)
 )
 
+# una funcion que agrupa las edades:
+# x: el variable que agrupamos
+# Int = el intervalos de edad de salida
 aggVec <- function(x,Int){
+	# suponemos que las edades son sencillas y empiezan en 0
 	ages <- 1:length(x) - 1
+	# determinar en cual grupo va cada edad
 	groups <- ages - ages %% Int
+	# una manera tipica de agrupar (aggregar) cosas en R
 	tapply(x,groups,sum, na.rm = TRUE)
 }
-aggVec(Ex,10)
+aggVec(Ex,10) # por ejemplo
 
-PxyhAgg <- t(apply(Pxyh,1,aggVec,Int = 10))
+# un bucle interno sobre las filas.
+# esto quiere decir que operamos sobre cada edad cronologico por separado.
+# cada edad cronologica tiene un vector de edades tanatologicas que queremos
+# agrupar. 
+# Pxy = la matriz ; 1 = filas ; aggVec = la funcion que le aplicamos ; 
+# Int = 10 = un argumento que pasamos a la funcion
+PxyhAgg <- t(apply(Pxyh,1,aggVec,Int = 10)) # luego el transpuesto por conveniencia
 PxyfAgg <- t(apply(Pxyf,1,aggVec,Int = 10))
 
+# mucho mejor!
 Pyramid(PxyhAgg, PxyfAgg, grid = FALSE,
 		coh.axis = TRUE,year = 1900, prop = TRUE, 
 		border.males = NA, border.females = NA, 
 		fill.males = colRampa(11), fill.females = colRampa(11)
 )
-
+# una linea de perfil!
 PyramidOutline(Exh,Ex,scale = 100)
+# le falta leyenda y quidar los detalles. Otra vez: un grafico artisanal.
+# tampoco ha sido mucho trabajo. Pero si quieres hacerlo mas a menudo, mas
+# vale simplificar el trabajo tras definir una funcion que los hace todo, o
+# preferiblemente en pasos modulares. Es decir, 1) una funcion come dx, y Px
+# y te devuelve la matriz descompuesta. de heco, ya tengo uno aqui:
+# https://gist.github.com/timriffe/4948828 usalo si quieres!
+
+# 2) una funcion de agrupacion que tambien te hace la parte de apply() seria util
+# 3) finalmente un modulo que te dibuja la piramida con leyenda y todo para no tener
+# que reinventar la rueda cada vez
 
 
+###############################################
+# ahora invertimos lo de arriba: la misma matriz
+# tambien nos permite hacer la piramide por tiempo
+# restante descompuesto por la edad.
 
-
+# solo hace falta agrupar, esta vez sobre columnas en vez de filas (el '2')
 PxyhAggT <- t(apply(Pxyh,2,aggVec,Int = 10))
 PxyfAggT <- t(apply(Pxyf,2,aggVec,Int = 10))
 
+# y ya nos sale asi de facil:
 Pyramid(PxyhAggT, PxyfAggT, grid = FALSE,
 		coh.axis = TRUE,year = 1900, prop = TRUE, 
 		border.males = NA, border.females = NA, 
 		fill.males = rev(colRampa(11)), fill.females = rev(colRampa(11))
 )
-
 PyramidOutline(rowSums(PxyhAggT),rowSums(PxyfAggT),scale = 100)
 
-head(Nac)
-Nac <- Nac[!is.na(Nac$Births), ]
+###########################################
+# Ojo: estos dos ultimas piramides son 'multiestados' y 
+# y funciona programaticamente igual representar datos de
+# poblaciones en categorias distintas: estado civil, nivel educativo,
+# etc etc. filas = edades, columnas = estados.
+###########################################
 
+#############################################
+# aqui he preguntado por algun otro deseo, y nadie dijo nada
+# asi que he decidio jugar con los nacimientos
+#############################################
+Nac        <- Nac[!is.na(Nac$Births), ]
+
+# definimos cohorte de nacimiento, pero toma en cuenta
+# que es super aproximado, porque los datos son AP, y cada
+# AP sencillo tiene 2 cohortes adentros (los 2 triangulos Lexis).
 Nac$Cohort <- Nac$Year - Nac$Age
 
+# quiero transformarlo en matrices AP y AC
 library(reshape2)
 
+# recomiendo aprender esta funcion acast(). Lo uso casi cada vez que uso R!
 NacAP <- acast(Nac[Nac$Age >= 13 & Nac$Age <= 55, ], 
-		       Age~Year, value.var = "Births")
+		       Age~Year, value.var = "Births") # edad por periodo
 NacAC <- acast(Nac[Nac$Age >= 13 & Nac$Age <= 55, ], 
-		Age~Cohort, value.var = "Births")
+		Age~Cohort, value.var = "Births") # edad por cohorte
 nrow(NacAP)
+# otra vez demasiados colores
 barplot(NacAP, border = NA, col = colRampa(43), space = 0)
-
+# agrupamos como antes (no hace falta transpuesto aqui)
 NacAPAgg <- apply(NacAP,2,aggVec,Int = 5)
 NacACAgg <- apply(NacAC,2,aggVec,Int = 5)
 nrow(NacAPAgg)
-dev.new()
+
+# miramos los dos graficos uno encima del otro. Intenta reescalar la
+# ventana grafica. hmmm. En RStudio por defecto te mete los graficos
+# en una ventanita, pero busca como sacar el grafico en una ventana libre
+# para poder poner los dos al lado. Busca los booms y echos, y intenta
+# relacionar la experiencia de los cohortes con lo de los periodos
 barplot(NacAPAgg, border = NA, col = colRampa(9), space = 0)
+dev.new()
 barplot(NacACAgg, border = NA, col = colRampa(9), space = 0)
 
 
-
+# fin!
 
