@@ -59,13 +59,14 @@ la segunda vez digo yo...
 
 Hay una literatura grande y activa sobre el ``problema APC''. Esto es un
 problema estadistica que viene del deseo de poder separar efectos de las tres
-dimensiones simultaneamente. No hay consenso, pero mucho dir\'ian que no es
+dimensiones simultaneamente. No hay consenso, pero muchos dir\'ian que no es
 posible. No nos preocupamos por eso cuando se trata de 1) diagramas o 2)
 visualizaciones de datos.
 
 \section{TPD}
 \'Esta diagrama aun no est\'a en la literatura, pero lo he puesto en un articulo
-que se est\'a revisando, as\'i que tal vez veremos uno silvestre pronto :-).
+que se est\'a revisando, as\'i que tal vez veremos uno en el silvestre pronto
+:-).
 \'Este es el caso de \textbf{APC} invertido en el tiempo. Es decir es como
 \textbf{APC} desde la perspectiva t\'anatol\'ogica. Si las cosas no han tenido
 sentido hasta ahora, tal vez el diagrama ayudar\'a. Los variables temporales son:
@@ -76,7 +77,7 @@ sentido hasta ahora, tal vez el diagrama ayudar\'a. Los variables temporales son
   t\'anatol\'ogica que he dibujado el mi\'ercoles--- son sus barras horizontales.
 \end{description}
 Los consejos respecto a visualizaci\'on de datos son iguales que lo anterior.
-\'Esta caso tambi\'en tiene el problema de sobreidentificaci\'on si es que se
+\'Este caso tambi\'en tiene el problema de sobreidentificaci\'on si es que se
 quiere separar efectos en una regressi\'on estadistica. Mi manera preferida de
 representarlo en forma de diagrama es analogo al caso \textbf{APC}: \textbf{T}
 est\'a en el eje vertical (descendiente), \textbf{P} el horizontal (como el case \textbf{APC}), y
@@ -85,7 +86,7 @@ derecha (es decir perpendicular a \textbf{C} en el caso del diamgrama Lexis ``es
 
 \section{ATL} 
 ATL es mi favorito del momento porque tiene potencia explicativa para muchos
-fenomenos. El perspectivo \textbf{ATL} es ortogonal a las l\'ineas de cohorte
+fen\'omenos. El perspectivo \textbf{ATL} es ortogonal a las l\'ineas de cohorte
 del diagrama \textbf{APC}. Es decir, el diagrama \textbf{ATL} est\'a en otro
 plano totalmente. El \textbf{ATL} est\'a dentro de un cohorte, y describe la
 experiencia de un cohorte de nacimientos solo. Representa una contabilidad completa de su reparto temporal.
@@ -96,14 +97,14 @@ Las dimensiones temporales que lo compone son:
   \item{\textbf{L}} la duraci\'on total de vida (Lifespan).
   \end{description}
 \textbf{A}, de hecho, es sincr\'onico con \textbf{P} en el caso de \textbf{ATL},
-as\'i que tambi\'en se podr\'ia llamarlo \textbf{PTL}. Como en los casos anteriores, el tiemp mueve de
-izquierda a derecha, es decir el eje horizontal es el indice de \textbf{A} \&
+as\'i que tambi\'en se podr\'ia llamarlo \textbf{PTL}. Como en los casos
+anteriores, el tiempo mueve de izquierda a derecha, es decir el eje horizontal es el indice de \textbf{A} \&
 \textbf{P} (experimentados simult\'aneamente para los miembros de un cohorte).
 El eje vertical es el \textbf{T}, i.e., el tiempo restante desciende. \textbf{L} se representa con
 l\'ineas descendientes desde arriba izquierda hasta abajo derecha. \textbf{L} es
 la suma de \textbf{A} y \textbf{T}, y por lo tanto el sistema est\'a
-sobreidentificada de dos formas simultaneamente! Pero esto no nos supone ning\'un problema con 1) usar el diagrama para fines did\'aciticas o 2)
-representar datos de \'esta forma. He usado \'este diagrama en un paper recien
+sobreidentificada de dos formas simultaneamente! Pero esto no nos supone
+ning\'un problema con 1) usar el diagrama para fines did\'aciticos o 2) representar datos de \'esta forma. He usado \'este diagrama en un paper recien
 enviado, que tambi\'en puedes encontrar aqu\'i:
 \url{http://paa2015.princeton.edu/abstracts/152409}\footnote{PAA tiene quota
 para tener tu nombre en el programa, y ten\'ia que quitar mi nombre de la
